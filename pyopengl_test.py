@@ -50,11 +50,12 @@ class model():
 def init():
     """ Initializes pygame + OpenGL and sets up a display window and viewing frustum. """    
     pygame.init()
+    pygame.display.set_caption("PyOpenGL Test")
     display = (800,600)
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
     gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
     glEnable(GL_DEPTH_TEST);    
-    glTranslatef(0.0, 0.0, -15)  
+    glTranslatef(0.0, 0.0, -15)    
 
 def main():
     init()   
