@@ -1,3 +1,3 @@
-# pyopengl_test
+Draws a simple rotating object using OpenGL in Python3.
 
-Draws a simple rotating object using OpenGL.
+Prerequisites: pygame, PyOpenGL 
