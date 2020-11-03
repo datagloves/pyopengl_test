@@ -8,6 +8,8 @@ OpenGL.ERROR_CHECKING = False
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+import unittest
+
 def defineTube(sides:int):
     """ Defines a cylinder without caps and returns it as a list of quads. """
     quads = []
@@ -74,5 +76,18 @@ def main():
                 pygame.quit()
                 sys.exit()
 
+class SimpleTest(unittest.TestCase):
+    # Model should have the defined amount of sides
+    def test_defineTube1(self):
+        self.assertEqual(len(defineTube(16)), 16)
+    def test_defineTube2(self):
+        self.assertEqual(len(defineTube(32)), 32)  
+    # Each side should have 4 vertices      
+    def test_defineTube3(self):
+        quads = defineTube(16)
+        for quad in quads:
+            self.assertEqual(len(quad), 4)          
+
 if __name__ == "__main__":
+    #unittest.main()
     main()
