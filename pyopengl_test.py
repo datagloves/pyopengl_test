@@ -1,5 +1,6 @@
 import sys
 import math
+import numpy as np
 import pygame
 from pygame.locals import *
 
@@ -11,41 +12,52 @@ from OpenGL.GLU import *
 import unittest
 
 def defineTube(sides:int):
-    """ Defines a cylinder without caps and returns it as a list of quads. """
-    quads = []
-    for i in range(sides):
-        quad = []
-        quad.append([math.sin(math.pi * 2 / sides * i) * 5.0, math.cos(math.pi * 2 / sides * i) * 5.0, -5.0])
-        quad.append([math.sin(math.pi * 2 / sides * i) * 5.0, math.cos(math.pi * 2 / sides * i) * 5.0, 5.0])
-        quad.append([math.sin(math.pi * 2 / sides * (i + 1)) * 5.0, math.cos(math.pi * 2 / sides * (i + 1)) * 5.0, 5.0])
-        quad.append([math.sin(math.pi * 2 / sides * (i + 1)) * 5.0, math.cos(math.pi * 2 / sides * (i + 1)) * 5.0, -5.0])
-        quads.append(quad) 
-    return quads
+    """ Defines a cylinder without caps and returns it as a three dimensional array (quad, vert, axis). """
+    geom = np.zeros((sides, 4, 3))
+   
+    print (geom.ndim)
+    print (geom.shape)
+    for i in range(sides):               
+        geom[i,0,0] = math.sin(math.pi * 2 / sides * i) * 5.0
+        geom[i,0,1] = math.cos(math.pi * 2 / sides * i) * 5.0 
+        geom[i,0,2] = -5.0
+
+        geom[i,1,0] = math.sin(math.pi * 2 / sides * i) * 5.0
+        geom[i,1,1] = math.cos(math.pi * 2 / sides * i) * 5.0
+        geom[i,1,2] = 5.0
+
+        geom[i,2,0] = math.sin(math.pi * 2 / sides * (i + 1)) * 5.0
+        geom[i,2,1] = math.cos(math.pi * 2 / sides * (i + 1)) * 5.0
+        geom[i,2,2] = 5.0
+
+        geom[i,3,0] = math.sin(math.pi * 2 / sides * (i + 1)) * 5.0
+        geom[i,3,1] = math.cos(math.pi * 2 / sides * (i + 1)) * 5.0
+        geom[i,3,2] = -5.0  
+    return geom
 
 class model():
     """ Defines a 3D geometry and its drawing method. """ 
-    quads = []
+    geom = np.empty(shape = (0,0,0))
 
     def draw(self):
         """ Draws the model using OpenGL calls. """
         count = 0
 
-        for quad in self.quads:            
-            # Alternate between 2 colours
-            count += 1
-            if (count % 2 == 1):
+        for i in range(np.ma.size(self.geom,axis=0)):            
+            # Alternate between 2 colours           
+            if (i % 2 == 1):
                 glColor3f(0.3, 0.5, 0.9)
             else:
                 glColor3f(0.3, 0.6, 0.9)
 
             # Tell OpenGL to draw the quad
             glBegin(GL_QUADS)
-            for vert in quad:           
-                glVertex3fv(vert)
+            for vert in range(4):           
+                glVertex3fv(self.geom[i,vert])
             glEnd()
 
     def __init__(self):
-        self.quads = defineTube(16)
+        self.geom = defineTube(16)
 
 def init():
     """ Initializes pygame + OpenGL and sets up a display window and viewing frustum. """    
